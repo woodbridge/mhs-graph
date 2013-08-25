@@ -1,0 +1,50 @@
+<html>
+  
+  <head>
+    <title>MHS Graph Yall'z</title>
+  </head>
+
+  <body>
+    
+    <header>
+      <h1>MHS Graph</h1>
+      <p>Let's create a cool graph diagram of the MHS student body.</p>
+    </header>
+
+    <h2>How It Works</h2>
+    <ol>
+      <li>Enter your first and last name.</li>
+      <li>Go down the list of student names.  If you have ever talked to them, then check their box.</li>
+      <li>Submit the form! You'll be shown the current graph structure.</li>
+    </ol>
+    
+    <form action='/submit' method='post'>
+      <p><em>Please, please, please BE HONEST.</em></p>
+      <div class='form-row'>
+        <label>First Name</label>
+        <input type='text' name='first_name' />
+      </div>
+
+      <div class='form-row'>
+        <label>Last Name</label>
+        <input type='text' name='last_name' />
+      </div>
+
+      <div class='form-row'>
+        <ul>
+          <% @students.each do |name| %>
+            <li>
+             <input type='checkbox' name='student-<%= name['id'] %>'>
+             <%= full_name(name) %>
+            </li>  
+          <% end %>
+        </ul>
+      </div>
+
+      <div class='form-row'>
+        <button>Submit</button>
+      </div>
+    </form>
+
+  </body>
+</html>
