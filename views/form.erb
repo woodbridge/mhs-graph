@@ -1,50 +1,129 @@
 <html>
-  
+
+
+  <style type="text/css">
+    * { padding: 0; margin: 0;}
+    body {
+      font-family: "Helvetica Neue", "Helvetica", sans-serif;
+      font-size: 14px;
+      color: #444;
+    }
+
+    h1, h2 {
+      margin-bottom: 15px;
+    }
+
+    ol, ul, p {
+      margin-bottom: 1em;
+    }
+
+    p {
+      font-size: 1em;
+      line-height: 145%;
+    }
+
+    li {
+      line-height: 1.5em;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 15px;
+      color: #222;
+    }
+
+    #container {
+      width: 500px;
+      margin: 50px auto;
+    }
+
+    a {
+      color: #2d72d9;
+    }
+
+    form {
+      margin-bottom: 1em;
+    }
+
+    div.form-row {
+      margin-bottom: 10px;
+    }
+
+    ol {
+      padding-left: 20px;
+    }
+
+    #students {
+      list-style: none;
+    }
+
+    #students li input {
+      margin-right: 10px;
+    }
+
+    #user-input {
+      margin: 2em 0;
+    }
+
+  </style>
+
   <head>
     <title>MHS Graph Yall'z</title>
   </head>
 
   <body>
-    
-    <header>
-      <h1>MHS Graph</h1>
-      <p>Let's create a cool graph diagram of the MHS student body.</p>
-    </header>
+    <section id='container'>
+      <header>
+          <h1>MHS Graph</h1>
+          <p>Let's create a cool graph diagram of the MHS student body.</p>
+        </header>
 
-    <h2>How It Works</h2>
-    <ol>
-      <li>Enter your first and last name.</li>
-      <li>Go down the list of student names.  If you have ever talked to them, then check their box.</li>
-      <li>Submit the form! You'll be shown the current graph structure.</li>
-    </ol>
-    
-    <form action='/submit' method='post'>
-      <p><em>Please, please, please BE HONEST.</em></p>
-      <div class='form-row'>
-        <label>First Name</label>
-        <input type='text' name='first_name' />
-      </div>
+        <h2>How It Works</h2>
+        <ol>
+          <li>Enter your first and last name.</li>
+          <li>Go down the list of student names.  If you have ever talked to them, then check their box.</li>
+          <li>Submit the form! You'll be shown the current graph structure.</li>
+        </ol>
 
-      <div class='form-row'>
-        <label>Last Name</label>
-        <input type='text' name='last_name' />
-      </div>
+        <form action='/submit' method='post'>
+          <p><em>Please, please, please BE HONEST.</em></p>
 
-      <div class='form-row'>
-        <ul>
-          <% @students.each do |name| %>
-            <li>
-             <input type='checkbox' name='student-<%= name['id'] %>'>
-             <%= full_name(name) %>
-            </li>  
-          <% end %>
-        </ul>
-      </div>
+          <a href="/graph.png">Current Graph</a>
 
-      <div class='form-row'>
-        <button>Submit</button>
-      </div>
-    </form>
+          <section id='user-input'>
+            <h2>Let's Go</h2>
+            <p>NOTE: For this to work, you have to spell your name </strong>exactly like it is written below.</strong></p>
+            <div class='form-row'>
+              <label>Your First Name</label>
+              <input type='text' name='first_name' />
+            </div>
+
+            <div class='form-row'>
+              <label>Your Last Name</label>
+              <input type='text' name='last_name' />
+            </div>
+          </section>
+
+          <p>Now, check anyone who you have ever had a conversation with:</p>
+
+          <div class='form-row'>
+            <ul id='students'>
+              <% @students.each do |name| %>
+                <li>
+                 <input type='checkbox' name='student-<%= name['id'] %>'>
+                 <%= full_name(name) %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+
+          <div class='form-row'>
+            <button>Submit</button>
+          </div>
+        </form>
+
+
+    </section>
 
   </body>
 </html>

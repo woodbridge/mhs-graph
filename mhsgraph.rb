@@ -1,8 +1,6 @@
 require 'sinatra/base'
 require 'json'
 require 'sequel'
-require 'pry'
-
 
 DB = Sequel.connect 'sqlite://database.db'
 $students = JSON.load(File.read('students.mhs'))
@@ -34,7 +32,7 @@ class MHSGraph < Sinatra::Base
     user_first = params['first_name'].downcase
     user_last = params['last_name'].downcase
 
-    user_nick = user_first + ' ' + user_last[0].capitalize + '.'
+    user_nick = user_first.capitalize + ' ' + user_last[0].capitalize + '.'
 
     user = $students.find do |s|
       s['first_name'] == user_first && s['last_name'] == user_last
@@ -92,6 +90,4 @@ class MHSGraph < Sinatra::Base
     File.open('mhs.dot', 'w') { |f| f.puts graph }
     `neato -Tpng mhs.dot -o graph.png`
   end
-
-  run! if app_file == $0
 end
