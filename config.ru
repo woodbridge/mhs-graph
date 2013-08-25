@@ -1,0 +1,3 @@
+require './mhsgraph'
+
+run MHSGraph
