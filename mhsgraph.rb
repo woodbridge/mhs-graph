@@ -23,6 +23,21 @@ class MHSGraph < Sinatra::Base
     end
   end
 
+  def write_graph_structure
+    graph =<<EOS
+  graph G {
+    sep="+10, 10";
+    splines=curved;
+    overlap=scale;
+EOS
+
+    DB[:relations].all.each do |rel|
+      graph << "  \"#{rel[:start_name]}\" -- \"#{rel[:end_name]}\""
+    end
+    graph << "}"
+    File.open('mhs.dot', 'w') { |f| f.puts graph }
+  end
+
   get '/' do
     @students = $students
     erb :form
@@ -69,23 +84,23 @@ class MHSGraph < Sinatra::Base
      })
     end
 
-    redirect '/graph.ng'
+    write_graph_structure
+    build_graph
+    redirect '/graph.png'
   end
 
   get '/graph.png' do
-    build_graph
     content_type 'image/png'
     File.read GRAPH_PATH
   end
 
+  get '/rebuild_graph' do
+    build_graph
+    redirect '/graph.png'
+  end
+
   def build_graph
     puts "Rebuilding graph..."
-    graph = "graph G {"
-    DB[:relations].all.each do |rel|
-      graph << "  \"#{rel[:start_name]}\" -- \"#{rel[:end_name]}\""
-    end
-    graph << "}"
-    File.open('mhs.dot', 'w') { |f| f.puts graph }
     `neato -Tpng mhs.dot -o #{GRAPH_PATH}`
   end
 end
