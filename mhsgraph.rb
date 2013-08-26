@@ -40,7 +40,7 @@ class MHSGraph < Sinatra::Base
 
     if !user
       puts "Couldn't find that user...."
-      return "Unknown user"
+      return "Unknown user.  You probably spelled your name wrong."
     end
 
     user_id = user['id']
@@ -71,18 +71,24 @@ class MHSGraph < Sinatra::Base
      })
    end
 
+   build_graph
    redirect '/graph.png'
   end
 
   get '/graph.png' do
-    build_graph
     content_type 'image/png'
     File.read('./graph.png')
   end
 
   def build_graph
     puts "Rebuilding graph..."
-    graph = "graph G {"
+    graph =<<EOS
+	graph G {
+	  sep="+10, 10";
+	  splines=curved;
+	  overlap=scale;
+EOS
+
     DB[:relations].all.each do |rel|
       graph << "  \"#{rel[:start_name]}\" -- \"#{rel[:end_name]}\""
     end
