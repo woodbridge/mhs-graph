@@ -78,7 +78,7 @@ EOS
      # TODO: This needs to be able to handle dup names.
      DB[:relations].insert({
       :start_id => user_id,
-      :end_id => user_id,
+      :end_id => id,
       :start_name => user_nick,
       :end_name => student_nick
      })
