@@ -70,18 +70,16 @@ EOS
     end
 
     student_ids.each do |id|
-     qresult = $students.select {|s| s['id'] == id }
-     student_first = qresult.first['first_name'].capitalize
-     student_last = qresult.first['last_name'].capitalize
-     student_nick = student_first + ' ' + student_last[0] + '.'
-     # student_name = student["name"]
-     # TODO: This needs to be able to handle dup names.
-     DB[:relations].insert({
-      :start_id => user_id,
-      :end_id => id,
-      :start_name => user_nick,
-      :end_name => student_nick
-     })
+      qresult = $students.select {|s| s['id'] == id }
+      student_first = qresult.first['first_name'].capitalize
+      student_last = qresult.first['last_name'].capitalize
+      student_nick = student_first + ' ' + student_last[0] + '.'
+
+      DB[:relations].insert({:start_id => user_id,
+        :end_id => id,
+        :start_name => user_nick,
+        :end_name => student_nick
+      })
     end
 
     write_graph_structure
