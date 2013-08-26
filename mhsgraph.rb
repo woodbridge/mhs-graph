@@ -9,6 +9,8 @@ $students = $students.each_with_index.map do |n, i|
   n
 end
 
+GRAPH_PATH = '/tmp/mhs-graph.png'
+
 class MHSGraph < Sinatra::Base
   set :sessions, true
 
@@ -27,12 +29,11 @@ class MHSGraph < Sinatra::Base
   end
 
   post '/submit' do
-    puts "Receeived submissions.."
-    # First, figure out who is submitting.
     user_first = params['first_name'].downcase
     user_last = params['last_name'].downcase
-
     user_nick = user_first.capitalize + ' ' + user_last[0].capitalize + '.'
+
+    puts "Receieved submission from: #{user_first} #{user_last}"
 
     user = $students.find do |s|
       s['first_name'] == user_first && s['last_name'] == user_last
@@ -40,23 +41,20 @@ class MHSGraph < Sinatra::Base
 
     if !user
       puts "Couldn't find that user...."
-      return "Unknown user"
+      return "Unknown user.  You probably spelled your name wrong or you don't go to MHS."
     end
 
     user_id = user['id']
 
-   # Now create all the relations from the User's
-   # survey.
-
-   student_ids = []
-   params.map do |k, v|
+    student_ids = []
+    params.map do |k, v|
      if v != nil && k =~ /student-(\d+)/
        puts "found a match"
        student_ids << $1.to_i
      end
-   end
+    end
 
-   student_ids.each do |id|
+    student_ids.each do |id|
      qresult = $students.select {|s| s['id'] == id }
      student_first = qresult.first['first_name'].capitalize
      student_last = qresult.first['last_name'].capitalize
@@ -69,15 +67,15 @@ class MHSGraph < Sinatra::Base
       :start_name => user_nick,
       :end_name => student_nick
      })
-   end
+    end
 
-   redirect '/graph.png'
+    redirect '/graph.ng'
   end
 
   get '/graph.png' do
     build_graph
     content_type 'image/png'
-    File.read('./graph.png')
+    File.read GRAPH_PATH
   end
 
   def build_graph
@@ -88,6 +86,6 @@ class MHSGraph < Sinatra::Base
     end
     graph << "}"
     File.open('mhs.dot', 'w') { |f| f.puts graph }
-    `neato -Tpng mhs.dot -o graph.png`
+    `neato -Tpng mhs.dot -o #{GRAPH_PATH}`
   end
 end
