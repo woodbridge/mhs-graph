@@ -44,6 +44,10 @@ EOS
   end
 
   post '/submit' do
+    if session['done']
+      return "Sorry, you already submitted.  Have to lock this down thanks to Dylan. G and his collaborates spamming the last data set."
+    end
+
     user_first = params['first_name'].downcase
     user_last = params['last_name'].downcase
     user_nick = user_first.capitalize + ' ' + user_last[0].capitalize + '.'
@@ -60,6 +64,10 @@ EOS
     end
 
     user_id = user['id']
+
+    if DB[:relations].where(:start_id => user_id).count > 0
+      return "Already recorded."
+    end
 
     student_ids = []
     params.map do |k, v|
@@ -81,6 +89,8 @@ EOS
         :end_name => student_nick
       })
     end
+
+    session0['done'] = true
 
     write_graph_structure
     build_graph
